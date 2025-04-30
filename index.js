@@ -1,0 +1,18 @@
+const express = require("express");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const app = express();
+
+dotenv.config();
+
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(cors);
+
+app.use('/api/v1/test')
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Node Server Running`);
+});
