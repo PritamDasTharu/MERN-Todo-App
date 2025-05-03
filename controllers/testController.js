@@ -1,5 +1,5 @@
 const testingController = (req, res) => {
-  res.status(200).send(<h1>Response from MVC pattern</h1>);
+  res.status(200).send({ message: "Testing Controller" });
 };
 
-modules.export = { testingController };
+module.exports = { testingController };

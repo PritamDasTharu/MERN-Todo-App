@@ -6,10 +6,10 @@ const registerController = async (req, res) => {
     if (!username || !email || !password) {
       return res
         .status(500)
-        .send({ sucess: false, message: "Enter all fields" });
+        .send({ sucess: false, message: "All fields required" });
     }
 
-    const existingUser = await new userModel.findOne({ email });
+    const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(500).send({
         success: false,
@@ -22,11 +22,28 @@ const registerController = async (req, res) => {
 
     res
       .status(201)
-      .send({ success: false, message: "User registered sucessfully" });
+      .send({ success: true, message: "User registered sucessfully" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ success: false, message: "Register API", error });
   }
 };
 
-module.exports = { registerController };
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email, password });
+
+    if (!user) {
+      return res
+        .status(404)
+        .send({ success: false, message: "User not Found" });
+    }
+    res.status(200).send({ success: true, message: "Login Successful", user });
+  } catch (error) {
+    console.log("error");
+    res.status(500).send({ success: false, message: "Login API", error });
+  }
+};
+module.exports = { registerController, loginController };
