@@ -1,0 +1,26 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.login-container {
+    max-width: 400px;
+    margin-top: 80px;
+}
+
+.register-container{
+    max-width: 400px;
+    margin-top: 80px;
+}
+
+.btn-orange {
+    background-color: #F27D5F;
+    color: white;
+}
+
+.btn-orange:hover {
+    background-color: #e06c4d;
+}
+
+.text-orange {
+    color: #F27D5F;
+}
