@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import "./AuthStyles.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthServices from "../../Services/AuthServices";
+import toast from "react-hot-toast";
+import { getErrorMessage } from "../../Utils/ErrorMessage";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const loginHanlder = (e) => {
+  const navigate = useNavigate();
+  const loginHanlder = async (e) => {
     try {
       e.preventDefault();
-      alert(`Register Data:\nEmail: ${email}\nPassword: ${password}`);
-    } catch (error) {
-      console.log(error);
+      const data = { email, password };
+      const res = await AuthServices.loginUser(data);
+      toast.success(res.data.message);
+      navigate("/home");
+      localStorage.setItem("todoapp", JSON.stringify(res.data));
+      console.log(res.data);
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+      console.log(err);
     }
   };
   return (
@@ -32,6 +42,7 @@ const Login = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="mb-3">
@@ -45,6 +56,7 @@ const Login = () => {
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="d-grid">
