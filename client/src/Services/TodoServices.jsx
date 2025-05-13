@@ -13,5 +13,27 @@ const createTodo = (data) => {
   });
 };
 
-const TodoServices = { createTodo };
+const getAllTodo = (id) => {
+  const user = JSON.parse(localStorage.getItem("todoapp"));
+  return API.post(
+    `/todo/getAll/${id}`,
+    { id },
+    {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    }
+  );
+};
+
+const updateTodo = (id, data) => {
+  const user = JSON.parse(localStorage.getItem("todoapp"));
+  return API.patch(`/todo/update/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${user?.token}`,
+    },
+  });
+};
+
+const TodoServices = { createTodo, getAllTodo, updateTodo };
 export default TodoServices;
