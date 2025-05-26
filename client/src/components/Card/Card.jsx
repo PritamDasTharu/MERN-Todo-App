@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Card.css";
 import EditTodo from "../Layout/EditTodo";
+import TodoServices from "../../Services/TodoServices";
 
 const Card = ({ allTask }) => {
   const [showModal, setShowModal] = useState(false);
@@ -9,6 +10,13 @@ const Card = ({ allTask }) => {
   const handleEdit = (task) => {
     setSelectedTask(task);
     setShowModal(true);
+  };
+
+  const handleDelete = (taskId) => {
+    const userData = JSON.parse(localStorage.getItem("todoapp"));
+    const id = userData && userData.user.id;
+    TodoServices.deleteTodo(taskId);
+    console.log("Delete task with ID:", taskId);
   };
 
   return (
@@ -41,7 +49,11 @@ const Card = ({ allTask }) => {
                   >
                     <i className="fa-solid fa-pen-to-square"></i>
                   </button>
-                  <button className="btn btn-danger" title="Delete">
+                  <button
+                    className="btn btn-danger"
+                    title="Delete"
+                    onClick={() => handleDelete(task._id)}
+                  >
                     <i className="fa-solid fa-trash"></i>
                   </button>
                 </div>

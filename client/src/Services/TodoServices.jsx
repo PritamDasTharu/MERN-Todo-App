@@ -35,5 +35,14 @@ const updateTodo = (id, data) => {
   });
 };
 
-const TodoServices = { createTodo, getAllTodo, updateTodo };
+const deleteTodo = (id) => {
+  const user = JSON.parse(localStorage.getItem("todoapp"));
+  return API.delete(`/todo/delete/${id}`, {
+    headers: {
+      Authorization: `Bearer ${user?.token}`,
+    },
+  });
+};
+
+const TodoServices = { createTodo, getAllTodo, updateTodo, deleteTodo };
 export default TodoServices;
