@@ -13,10 +13,8 @@ const Card = ({ allTask }) => {
   };
 
   const handleDelete = (taskId) => {
-    const userData = JSON.parse(localStorage.getItem("todoapp"));
-    const id = userData && userData.user.id;
     TodoServices.deleteTodo(taskId);
-    console.log("Delete task with ID:", taskId);
+    // console.log("Delete task with ID:", taskId);
   };
 
   return (
