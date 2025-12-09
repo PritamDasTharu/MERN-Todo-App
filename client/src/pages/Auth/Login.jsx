@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const loginHanlder = async (e) => {
+  const loginHandler = async (e) => {
     try {
       e.preventDefault();
       const data = { email, password };
@@ -30,7 +30,7 @@ const Login = () => {
         <h2 className="text-center mb-2">Login</h2>
         <p className="text-center text-muted mb-4">Your day, done your way.</p>
 
-        <form onSubmit={loginHanlder}>
+        <form onSubmit={loginHandler}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
               Email

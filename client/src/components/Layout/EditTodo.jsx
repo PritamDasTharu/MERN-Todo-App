@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import TodoServices from "../../Services/TodoServices";
 
-const EditTodo = ({ task, setShowModal }) => {
+const EditTodo = ({ task, setShowModal, onSave }) => {
   const [title, setTitle] = useState(task?.title);
   const [description, setDescription] = useState(task?.description);
   const [isCompleted, setIsCompleted] = useState(task?.isCompleted);
@@ -21,10 +21,10 @@ const EditTodo = ({ task, setShowModal }) => {
         return toast("Please provide title and description");
       }
 
-      await TodoServices.updateTodo(id, data);
+      await TodoServices.updateTodo(task._id, data);
       setShowModal(false);
+      onSave?.();
       toast.success("Task Updated Successfully");
-      console.log(todo);
       setTitle("");
       setDescription("");
     } catch (error) {
@@ -34,7 +34,7 @@ const EditTodo = ({ task, setShowModal }) => {
   };
 
   const handleSelectChange = (e) => {
-    setIsCompleted(e.target.value);
+    setIsCompleted(e.target.value === "true");
   };
   return (
     <>
@@ -81,11 +81,12 @@ const EditTodo = ({ task, setShowModal }) => {
                   <div className="my-3">
                     <select
                       className="form-select"
+                      value={isCompleted}
                       onChange={handleSelectChange}
                     >
-                      <option selected>Select Status</option>
-                      <option value={true}>Complete</option>
-                      <option value={false}>Incomplete</option>
+                      <option value="">Select Status</option>
+                      <option value="true">Complete</option>
+                      <option value="false">Incomplete</option>
                     </select>
                   </div>
                 </form>

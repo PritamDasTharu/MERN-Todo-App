@@ -1,9 +1,87 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Card.css";
 import EditTodo from "../Layout/EditTodo";
 import TodoServices from "../../Services/TodoServices";
 
-const Card = ({ allTask }) => {
+// const Card = ({ allTask }) => {
+//   const [showModal, setShowModal] = useState(false);
+//   const [selectedTask, setSelectedTask] = useState(null);
+
+//   const handleEdit = (task) => {
+//     setSelectedTask(task);
+//     setShowModal(true);
+//   };
+
+//   const handleDelete = (taskId) => {
+//     TodoServices.deleteTodo(taskId);
+//     // console.log("Delete task with ID:", taskId);
+//   };
+
+//   useEffect(() => {
+//     handleDelete;
+//     handleEdit;
+//   }, []);
+
+//   useEffect(() => {
+//     if (!showModal) {
+//       handleDelete();
+//       handleEdit();
+//     }
+//   }, [showModal]);
+//   return (
+//     <>
+//       <div className="container">
+//         <div className="row gx-4 gy-4">
+//           {allTask?.map((task, i) => (
+//             <div className="col-lg-3 col-md-4 col-sm-6" key={i}>
+//               <div className="card h-100">
+//                 <div className="card-header">
+//                   <div className="chead d-flex justify-content-between">
+//                     <h5 className="card-title">
+//                       {task?.title.substring(0, 10)}
+//                     </h5>
+//                     <h5 className={task?.isCompleted ? "tsk-cmp" : "tsk-inc"}>
+//                       {task?.isCompleted ? "Completed" : "Incomplete"}
+//                     </h5>
+//                   </div>
+//                 </div>
+//                 <div className="card-body">
+//                   <h6>{task?.title}</h6>
+//                   <p className="card-text">{task?.description}</p>
+//                   <h6>Date: {task?.createdAt.substring(0, 10)}</h6>
+//                 </div>
+//                 <div className="card-footer bg-transparent border-primary">
+//                   <button
+//                     className="btn btn-primary me-2"
+//                     title="Edit"
+//                     onClick={() => handleEdit(task)}
+//                   >
+//                     <i className="fa-solid fa-pen-to-square"></i>
+//                   </button>
+//                   <button
+//                     className="btn btn-danger"
+//                     title="Delete"
+//                     onClick={() => handleDelete(task._id)}
+//                   >
+//                     <i className="fa-solid fa-trash"></i>
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {showModal && selectedTask && (
+//         <EditTodo task={selectedTask} setShowModal={setShowModal} />
+//       )}
+//     </>
+//   );
+// };
+
+// export default Card;
+
+const Card = ({ allTask, onChange }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
@@ -12,9 +90,13 @@ const Card = ({ allTask }) => {
     setShowModal(true);
   };
 
-  const handleDelete = (taskId) => {
-    TodoServices.deleteTodo(taskId);
-    // console.log("Delete task with ID:", taskId);
+  const handleDelete = async (taskId) => {
+    try {
+      await TodoServices.deleteTodo(taskId);
+      onChange?.();
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
   };
 
   return (
@@ -62,7 +144,11 @@ const Card = ({ allTask }) => {
       </div>
 
       {showModal && selectedTask && (
-        <EditTodo task={selectedTask} setShowModal={setShowModal} />
+        <EditTodo
+          task={selectedTask}
+          setShowModal={setShowModal}
+          onSave={onChange}
+        />
       )}
     </>
   );
