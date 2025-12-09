@@ -2,7 +2,9 @@ const todoModel = require("../models/todoModel");
 
 const createTodoController = async (req, res) => {
   try {
-    const { title, description, createdBy } = req.body;
+    const { title, description } = req.body;
+    const createdBy = req.body.id; // From authMiddleware
+
     if (!title || !description) {
       return res.status(500).send({
         success: false,
@@ -24,12 +26,7 @@ const createTodoController = async (req, res) => {
 
 const getTodoController = async (req, res) => {
   try {
-    const { userId } = req.params;
-    if (!userId) {
-      return res
-        .status(404)
-        .send({ success: false, message: "No user found with this Id" });
-    }
+    const userId = req.body.id; // From authMiddleware
 
     const todos = await todoModel.find({ createdBy: userId });
     if (!todos) {
@@ -49,15 +46,22 @@ const getTodoController = async (req, res) => {
 const deleteTodoController = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.body.id; // From authMiddleware
+
     if (!id) {
       return res
         .status(404)
         .send({ success: false, message: "No todo found with this id" });
     }
 
-    const todo = await todoModel.findByIdAndDelete({ _id: id });
+    const todo = await todoModel.findOneAndDelete({
+      _id: id,
+      createdBy: userId,
+    });
     if (!todo) {
-      return res.status(404).send({ success: false, message: "No task found" });
+      return res
+        .status(404)
+        .send({ success: false, message: "No task found or unauthorized" });
     }
 
     res
@@ -74,18 +78,29 @@ const deleteTodoController = async (req, res) => {
 const updateTodoController = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.body.id; // From authMiddleware
+
     if (!id) {
       return res
         .status(404)
         .send({ success: false, message: "Please provide todo Id" });
     }
 
-    const data = req.body;
-    const todo = await todoModel.findByIdAndUpdate(
-      id,
-      { $set: data },
+    const { title, description, isCompleted } = req.body;
+    const updateData = { title, description, isCompleted };
+
+    const todo = await todoModel.findOneAndUpdate(
+      { _id: id, createdBy: userId },
+      { $set: updateData },
       { returnOriginal: false }
     );
+
+    if (!todo) {
+      return res
+        .status(404)
+        .send({ success: false, message: "No task found or unauthorized" });
+    }
+
     res
       .status(200)
       .send({ success: true, message: "Your task has been updated", todo });
